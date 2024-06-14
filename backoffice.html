@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+ 
+</style>
+<body>
+        <!--NavBar-->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/index.html">Prodotti</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/product.html">Scheda prodotto</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/backoffice.html">Backoffice</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        <!--Fine navbar-->
+    
+    <h1>Gestione Prodotti</h1>
+    <h2 class="d-flex justify-content-center mt-4">Compila il form e salva per aggiungere un prodotto</h2>
+    <h2 class="d-flex justify-content-center mt-3"><a href="/index.html">Clicca qui per visualizzare la lista completa</a></h2>
+    <h2 class="d-flex justify-content-center mt-3"><b>Ci sarà anche il prodotto appena aggiunto!</b></h2>
+    <form id="product-form">
+        <input type="hidden" id="product-id">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" required>
+        <label for="description">Descrizione:</label>
+        <textarea id="description" required></textarea>
+        <label for="brand">Marca:</label>
+        <input type="text" id="brand" required>
+        <label for="imageUrl">URL Immagine:</label>
+        <input type="text" id="imageUrl" required>
+        <label for="price">Prezzo:</label>
+        <input type="number" id="price" required>
+        <button type="submit">Aggiungi/Salva</button>
+    </form>
+    <div id="product-list"></div>
+    <script src="script.js"></script>
+    <script>
+// Esegui il codice quando il documento è completamente caricato
+document.addEventListener("DOMContentLoaded", () => {
+    // Recupera l'elenco dei prodotti dal server e li visualizza nel backoffice
+    recuperaProdotti().then(data => {
+        visualizzaProdottiBackoffice(data);
+    });
+
+    // Aggiunge un event listener al form dei prodotti per gestire l'invio
+    document.getElementById('product-form').addEventListener('submit', (event) => {
+        event.preventDefault(); // Previene il comportamento predefinito del form (che è il refresh della pagina)
+
+        // Ottiene l'ID del prodotto dal campo nascosto nel form
+        const id = document.getElementById('product-id').value;
+
+        // Crea un oggetto 'prodotto' con i valori presi dai campi del form
+        const prodotto = {
+            name: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            brand: document.getElementById('brand').value,
+            imageUrl: document.getElementById('imageUrl').value,
+            price: parseFloat(document.getElementById('price').value),
+        };
+
+        // Se c'è un ID, significa che stai modificando un prodotto esistente
+        if (id) {
+            modificaProdotto(id, prodotto).then(() => location.reload()); // Modifica il prodotto e ricarica la pagina
+        } else {
+            inviaProdotto(prodotto).then(() => location.reload()); // Invia un nuovo prodotto e ricarica la pagina
+        }
+    });
+});    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
